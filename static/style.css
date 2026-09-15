@@ -8,7 +8,7 @@ body {
 }
 
 .container {
-  max-width: 480px;
+  max-width: 560px;
   margin: 0 auto;
   background: #fff;
   border-radius: 12px;
@@ -24,16 +24,39 @@ h1 {
 
 .add-form {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
 
-.add-form input {
-  flex: 1;
+.add-form input[type="text"],
+.add-form textarea,
+.add-form select,
+.add-form input[type="date"] {
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 14px;
+  font-family: inherit;
+}
+
+.add-form textarea {
+  resize: vertical;
+}
+
+.add-form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-form-row select {
+  flex: 1;
+}
+
+.add-form-row input[type="date"] {
+  flex: 1;
 }
 
 .add-form button {
@@ -44,6 +67,7 @@ h1 {
   color: #fff;
   font-size: 14px;
   cursor: pointer;
+  align-self: flex-start;
 }
 
 .add-form button:hover {
@@ -56,17 +80,32 @@ h1 {
   padding: 0;
 }
 
-.todo-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 4px;
+.todo-item {
+  padding: 12px 4px;
   border-bottom: 1px solid #eee;
 }
 
-.todo-list li.empty {
+.todo-item.empty {
   color: #999;
-  justify-content: center;
+  text-align: center;
+}
+
+.todo-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.todo-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .check-btn {
@@ -76,17 +115,100 @@ h1 {
   cursor: pointer;
   color: #4a6cf7;
   width: 28px;
+  flex-shrink: 0;
+}
+
+.check-btn.small {
+  font-size: 14px;
+  width: 22px;
 }
 
 .title {
-  flex: 1;
   font-size: 15px;
   color: #333;
 }
 
-.todo-list li.done .title {
+.todo-item.done .title {
   text-decoration: line-through;
   color: #aaa;
+}
+
+.priority-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.priority-high { background: #e74c3c; }
+.priority-medium { background: #f0a020; }
+.priority-low { background: #95a5a6; }
+
+.due-date {
+  font-size: 12px;
+  color: #888;
+  margin-left: auto;
+}
+
+.due-date.overdue {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.memo {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #777;
+  white-space: pre-wrap;
+}
+
+.subtask-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0 0 0 4px;
+  border-left: 2px solid #eee;
+}
+
+.subtask-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 4px 8px;
+}
+
+.subtask-list li.done .title {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.subtask-list .title {
+  flex: 1;
+  font-size: 13px;
+}
+
+.subtask-add-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.subtask-add-form input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.subtask-add-form button {
+  border: none;
+  background: #eef1ff;
+  color: #4a6cf7;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 13px;
 }
 
 .delete-btn {
@@ -95,6 +217,7 @@ h1 {
   color: #e74c3c;
   cursor: pointer;
   font-size: 13px;
+  flex-shrink: 0;
 }
 
 .toggle-form, .delete-form {

@@ -12,19 +12,62 @@
 
     <form action="{{ url_for('add') }}" method="post" class="add-form">
       <input type="text" name="title" placeholder="할 일을 입력하세요" autofocus required>
+      <div class="add-form-row">
+        <select name="priority">
+          {% for p in priorities %}
+          <option value="{{ p }}" {{ 'selected' if p == 'medium' }}>{{ priority_labels[p] }}</option>
+          {% endfor %}
+        </select>
+        <input type="date" name="due_date">
+      </div>
+      <textarea name="memo" placeholder="메모 (선택)" rows="2"></textarea>
       <button type="submit">추가</button>
     </form>
 
     <ul class="todo-list">
       {% for todo in todos %}
-      <li class="{{ 'done' if todo.done else '' }}">
-        <form action="{{ url_for('toggle', todo_id=todo.id) }}" method="post" class="toggle-form">
-          <button type="submit" class="check-btn">{{ '✔' if todo.done else '○' }}</button>
-        </form>
-        <span class="title">{{ todo.title }}</span>
-        <form action="{{ url_for('delete', todo_id=todo.id) }}" method="post" class="delete-form">
-          <button type="submit" class="delete-btn">삭제</button>
-        </form>
+      <li class="todo-item {{ 'done' if todo.done else '' }}">
+        <div class="todo-main">
+          <form action="{{ url_for('toggle', todo_id=todo.id) }}" method="post" class="toggle-form">
+            <button type="submit" class="check-btn">{{ '✔' if todo.done else '○' }}</button>
+          </form>
+          <div class="todo-body">
+            <div class="todo-title-row">
+              <span class="priority-badge priority-{{ todo.priority }}">{{ priority_labels[todo.priority] }}</span>
+              <span class="title">{{ todo.title }}</span>
+              {% if todo.due_date %}
+              <span class="due-date {{ 'overdue' if (todo.due_date < today and not todo.done) }}">{{ todo.due_date.strftime('%Y-%m-%d') }}</span>
+              {% endif %}
+            </div>
+            {% if todo.memo %}
+            <p class="memo">{{ todo.memo }}</p>
+            {% endif %}
+
+            {% if todo.subtasks %}
+            <ul class="subtask-list">
+              {% for sub in todo.subtasks %}
+              <li class="{{ 'done' if sub.done else '' }}">
+                <form action="{{ url_for('toggle_subtask', subtask_id=sub.id) }}" method="post" class="toggle-form">
+                  <button type="submit" class="check-btn small">{{ '✔' if sub.done else '○' }}</button>
+                </form>
+                <span class="title">{{ sub.title }}</span>
+                <form action="{{ url_for('delete_subtask', subtask_id=sub.id) }}" method="post" class="delete-form">
+                  <button type="submit" class="delete-btn">삭제</button>
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <form action="{{ url_for('add_subtask', todo_id=todo.id) }}" method="post" class="subtask-add-form">
+              <input type="text" name="title" placeholder="하위 할일 추가">
+              <button type="submit">+</button>
+            </form>
+          </div>
+          <form action="{{ url_for('delete', todo_id=todo.id) }}" method="post" class="delete-form">
+            <button type="submit" class="delete-btn">삭제</button>
+          </form>
+        </div>
       </li>
       {% else %}
       <li class="empty">등록된 할 일이 없습니다.</li>
