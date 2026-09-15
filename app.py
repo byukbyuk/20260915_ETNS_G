@@ -1,12 +1,21 @@
 import os
 from datetime import datetime
 
+from dotenv import load_dotenv
 from flask import Flask, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 
+load_dotenv()
+
 app = Flask(__name__)
-db_path = "/tmp/todo.db" if os.environ.get("VERCEL") else "todo.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+else:
+    db_path = "/tmp/todo.db" if os.environ.get("VERCEL") else "todo.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
